@@ -37,6 +37,10 @@ def extract_hog_features(root_dir, target_dir):
         filename = os.path.join(root_dir, filename1)
         img = cv2.imread(filename, 0)
 
+        image_features = feature.hog(img, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(16, 16),
+            block_norm='L2-Hys')
+        print(image_features.shape)
+
         np.save(os.path.join(target_dir, filename1[:-4] + '.npy'), image_features)
 
 def extract_hist(root_dir, target_dir, show_dir):
@@ -55,12 +59,12 @@ def extract_hist(root_dir, target_dir, show_dir):
         plt.savefig(os.path.join(show_dir, filename1[:-4] + ".png"))
         np.save(os.path.join(target_dir, filename1[:-4] + '.npy'), hist)
 
-# extract_hog_features("D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_hog")
-# extract_hog_features("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_hog")
+extract_hog_features("D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_hog")
+extract_hog_features("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_hog")
 # extract_lbp_feature("D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_lbp")
 # extract_lbp_feature("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_lbp")
-extract_hist("D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_hist", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_hist_show")
-extract_hist("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop_good", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_hist_good", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_hist_show")
+# extract_hist("D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_hist", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_hist_show")
+# extract_hist("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_hist", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_hist_show")
 
 
 
