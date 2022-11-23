@@ -110,22 +110,20 @@ def CNN(Xtrain, Xtest, ytrain, ytest):
 
 def classification_all_classifiers():
     # for lbp
-    # lbp_features = np.load("hist_features.npy")
-    #
-    # lbp_X = lbp_features[:, :-1]
-    # lbp_y = lbp_features[:, -1]
-    # print(lbp_X[1], lbp_X[-1])
-    # lbp_X = standardization(lbp_X)
-    # print(sum(lbp_X[10]))
-    # # Xtrain, Xtest, ytrain, ytest = train_test_split(lbp_X, lbp_y, test_size=0.1, random_state=0)
-    # print("start svm")
-    # svm_classification(lbp_X, lbp_X, lbp_y, lbp_y)
-    # print("start knn")
-    # knn_classification(lbp_X,  lbp_X, lbp_y, lbp_y)
+    lbp_features = np.load("hog_features.npy")
 
-    train_x, train_y = compile_trainingset("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_crop")
-    x_train = train_x.astype("float32") / 255.0
-    train_y = keras.utils.to_categorical(train_y, num_classes)
-    CNN(x_train, x_train, train_y, train_y)
+    lbp_X = lbp_features[:, :-1]
+    lbp_y = lbp_features[:, -1]
+    lbp_X = standardization(lbp_X)
+    # Xtrain, Xtest, ytrain, ytest = train_test_split(lbp_X, lbp_y, test_size=0.1, random_state=0)
+    print("start svm")
+    svm_classification(lbp_X, lbp_X, lbp_y, lbp_y)
+    print("start knn")
+    knn_classification(lbp_X,  lbp_X, lbp_y, lbp_y)
+
+    # train_x, train_y = compile_trainingset("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_crop")
+    # x_train = train_x.astype("float32") / 255.0
+    # train_y = keras.utils.to_categorical(train_y, num_classes)
+    # CNN(x_train, x_train, train_y, train_y)
 
 classification_all_classifiers()

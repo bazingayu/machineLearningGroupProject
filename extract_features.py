@@ -60,7 +60,7 @@ def extract_hist(root_dir, target_dir, show_dir):
 # extract_lbp_feature("D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_lbp")
 # extract_lbp_feature("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_lbp")
 extract_hist("D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_hist", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_hist_show")
-extract_hist("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_hist", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_hist_show")
+extract_hist("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop_good", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_hist_good", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_hist_show")
 
 
 

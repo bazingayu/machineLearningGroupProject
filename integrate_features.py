@@ -17,7 +17,7 @@ def combine_hog_features(positive_path="D:/BaiduNetdiskDownload/image/CMEImages/
 
 
     for index, filename1 in tqdm(enumerate(os.listdir((negative_path)))):
-        filename = os.path.join(positive_path, filename1)
+        filename = os.path.join(negative_path, filename1)
         per_hog = np.load(filename)
         all_samples.append(per_hog.tolist())
     all_samples = np.array(all_samples)
@@ -44,7 +44,7 @@ def combine_lbp_features(positive_path="D:/BaiduNetdiskDownload/image/CMEImages/
 
 
     for index, filename1 in tqdm(enumerate(os.listdir((negative_path)))):
-        filename = os.path.join(positive_path, filename1)
+        filename = os.path.join(negative_path, filename1)
         per_hog = np.load(filename, allow_pickle=True)
         all_samples.append(per_hog.tolist())
     all_samples = np.array(all_samples)
@@ -58,7 +58,7 @@ def combine_lbp_features(positive_path="D:/BaiduNetdiskDownload/image/CMEImages/
     print(downsamples)
     np.save("lbp_features.npy", downsamples)
 
-def combine_hist_features(positive_path="D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_hist",
+def combine_hist_features(positive_path="D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_hist_good",
                          negative_path="D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_hist"):
 
     # (215, 1382400)
@@ -71,20 +71,20 @@ def combine_hist_features(positive_path="D:/BaiduNetdiskDownload/image/CMEImages
 
 
     for index, filename1 in tqdm(enumerate(os.listdir((negative_path)))):
-        filename = os.path.join(positive_path, filename1)
+        filename = os.path.join(negative_path, filename1)
         per_hog = np.load(filename, allow_pickle=True)
         all_samples.append(per_hog.tolist())
     all_samples = np.array(all_samples)
     downsamples = all_samples
     # downsamples = pca.fit_transform(all_samples)
 
-    labels = np.ones((215 * 2, 1))
-    for i in range(215, 430):
+    labels = np.ones((215 + 81, 1))
+    for i in range(81, 215 + 81):
         labels[i, 0] = -1
     downsamples = np.column_stack((downsamples, labels))
     np.save("hist_features.npy", downsamples)
 
 
-# combine_hog_features()
-# combine_lbp_features()
+combine_hog_features()
+combine_lbp_features()
 combine_hist_features()
