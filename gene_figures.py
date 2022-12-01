@@ -38,7 +38,7 @@ XtrainHIST, XtestHIST, ytrainHIST, ytestHIST = train_test_split(hist_X, hist_y, 
 # intergration
 X = np.column_stack((lbp_X, hog_X, hist_X))
 y = hist_y
-XtrainINT, XtestNT, ytrainINT, ytestINT = train_test_split(X, y, test_size=0.2, random_state=0)
+XtrainINT, XtestINT, ytrainINT, ytestINT = train_test_split(X, y, test_size=0.2, random_state=0)
 
 # train knn model and use cross-validation to select the best k value
 # define the k value range
@@ -72,7 +72,7 @@ def optSVM():
     for i in range(0, len(C)):
         model = svm.LinearSVC(C=C[i])
         model.fit(XtrainLBP, ytrainLBP)
-        score = cross_val_score(model, Xtrain, ytrain, cv=5, scoring='accuracy')
+        score = cross_val_score(model, XtrainLBP, ytrainLBP, cv=5, scoring='accuracy')
         scores.append(np.array(score).mean())
         std_error.append(np.array(score).std())   
 
@@ -97,7 +97,7 @@ svm_model_INT.fit(XtrainINT, ytrainINT)
 svm_ypred_LBP = svm_model_LBP.predict(XtestLBP)
 svm_ypred_HOG = svm_model_HOG.predict(XtestHOG)
 svm_ypred_HIST = svm_model_HIST.predict(XtestHIST)
-svm_ypred_INT = svm_model_INT.predict(XtestNT)
+svm_ypred_INT = svm_model_INT.predict(XtestINT)
 
 # define baseline classifer
 base_model = DummyClassifier(strategy="most_frequent")
@@ -134,28 +134,66 @@ def draw_confusion_matrix(model, x_data, y_data):
     plt.text(0.9, 0.9,   "True\nPositive", fontsize = 10, bbox = dict(facecolor = 'white', alpha = 0.5))
     plt.show()
 
-def drawMatrices():
+def draw4FeaturesMatrices():
     draw_confusion_matrix(svm_model_LBP, XtestLBP, ytestLBP)
     draw_confusion_matrix(svm_model_HOG, XtestHOG, ytestHOG)
     draw_confusion_matrix(svm_model_HIST, XtestHIST, ytestHIST)
-    draw_confusion_matrix(svm_model_INT, XtestNT, ytestINT)
-    draw_confusion_matrix(base_model, XtestLBP)
+    draw_confusion_matrix(svm_model_INT, XtestINT, ytestINT)
 
-def drawROC():
+
+def draw4ModelsMatrices():
+    draw_confusion_matrix(svm_model_LBP, XtestLBP, ytestLBP)
+    draw_confusion_matrix(best_knn_model, XtestLBP, ytestLBP)
+    draw_confusion_matrix(base_model, XtestLBP, ytestLBP)
+    # cnn matrix
+    cm_log = ConfusionMatrixDisplay.from_predictions(cnn_ytest, cnn_ypred)
+    cm_log.ax_.set_title('Confusion Matrix')
+    plt.xlabel('Predicted Label')
+    plt.ylabel('True Label')
+    plt.text(-0.1, -0.1, "True\nNegative", fontsize = 10, bbox = dict(facecolor = 'white', alpha = 0.5))
+    plt.text(0.9, -0.1,  "False\nPositive", fontsize = 10, bbox = dict(facecolor = 'white', alpha = 0.5))
+    plt.text(-0.1, 0.9,  "False\nNegative", fontsize = 10, bbox = dict(facecolor = 'white', alpha = 0.5))
+    plt.text(0.9, 0.9,   "True\nPositive", fontsize = 10, bbox = dict(facecolor = 'white', alpha = 0.5))
+    plt.show()
+
+def draw4FeaturesROC():
     fpr_svm1, tpr_svm1, _ = roc_curve(ytestLBP, svm_ypred_LBP)
-    plt.plot(fpr_svm1, tpr_svm1, color='r', label = "SVM classifer")
+    plt.plot(fpr_svm1, tpr_svm1, color='r', label = "LBP feature")
     print("AUC value of SVM classifier LBP feature: ", metrics.auc(fpr_svm1, tpr_svm1))
+
+    fpr_svm2, tpr_svm2, _ = roc_curve(ytestLBP, svm_ypred_HOG)
+    plt.plot(fpr_svm2, tpr_svm2, color='r', label = "HOG feature")
+    print("AUC value of SVM classifier HOG feature: ", metrics.auc(fpr_svm2, tpr_svm2))
+
+    fpr_svm3, tpr_svm3, _ = roc_curve(ytestLBP, svm_ypred_HIST)
+    plt.plot(fpr_svm3, tpr_svm3, color='r', label = "HIST feature")
+    print("AUC value of SVM classifier HIST feature: ", metrics.auc(fpr_svm3, tpr_svm3))
+
+    fpr_svm4, tpr_svm4, _ = roc_curve(ytestLBP, svm_ypred_INT)
+    plt.plot(fpr_svm4, tpr_svm4, color='r', label = "Intergrated feature")
+    print("AUC value of SVM classifier Intergrated feature: ", metrics.auc(fpr_svm4, tpr_svm4))
     
-    fpr_knn1, tpr_knn1, _ = roc_curve(ytestLBP, knn_ypred)
-    plt.plot(fpr_knn1, tpr_knn1, color='g', label = "KNN classifer")
-    print("AUC value of KNN classifier KNN feature: ", metrics.auc(fpr_knn1, tpr_knn1))
+    plt.plot([0, 1], [0, 1], color='y',linestyle='--')
+    plt.xlabel('False positive rate')
+    plt.ylabel('True positive rate')
+    plt.legend()
+    plt.show()
+
+def draw4ModelsROC():
+    fpr_svm, tpr_svm, _ = roc_curve(ytestLBP, svm_ypred_LBP)
+    plt.plot(fpr_svm, tpr_svm, color='r', label = "SVM classifer")
+    print("AUC value of SVM classifier LBP feature: ", metrics.auc(fpr_svm, tpr_svm))
     
-    fpr_cnn1, tpr_cnn1, _ = roc_curve(cnn_ytest, cnn_ypred)
-    plt.plot(fpr_cnn1, tpr_cnn1, color='b', label = "CNN classifer")
-    print("AUC value of SVM classifier CNN feature: ", metrics.auc(fpr_cnn1, tpr_cnn1))
+    fpr_knn, tpr_knn, _ = roc_curve(ytestLBP, knn_ypred)
+    plt.plot(fpr_knn, tpr_knn, color='g', label = "KNN classifer")
+    print("AUC value of KNN classifier LBP feature: ", metrics.auc(fpr_knn, tpr_knn))
+    
+    fpr_cnn, tpr_cnn, _ = roc_curve(cnn_ytest, cnn_ypred)
+    plt.plot(fpr_cnn, tpr_cnn, color='b', label = "CNN classifer")
+    print("AUC value of CMM classifier LBP feature: ", metrics.auc(fpr_cnn, tpr_cnn))
 
     fpr_base, tpr_base, _ = roc_curve(ytestLBP, base_model.predict_proba(XtestLBP)[:,1])
-    plt.plot(fpr_base, tpr_base, color='y', label = "baseline classifier")
+    plt.plot(fpr_base, tpr_base, color='y', label = "Baseline classifier")
     print("AUC value of baseline classifier: ", metrics.auc(fpr_base, tpr_base))
 
     plt.plot([0, 1], [0, 1], color='y',linestyle='--')
@@ -165,8 +203,11 @@ def drawROC():
     plt.show()
 
 
-optKNN()
+#optKNN()
 optSVM()
 
-drawMatrices()
-drawROC()
+#draw4FeaturesMatrices()
+#draw4FeaturesROC()
+#
+#draw4ModelsMatrices()
+#draw4ModelsROC()
