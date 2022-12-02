@@ -9,7 +9,7 @@ from tensorflow import keras
 from tensorflow.keras import layers, regularizers
 from sklearn.metrics import confusion_matrix, classification_report, roc_curve
 from sklearn import svm
-import extract_features
+import classification as classification
 
 # read data
 lbp_features = np.load("lbp_features.npy")
@@ -18,21 +18,21 @@ num_classes = 2
 # for lbp
 lbp_X = lbp_features[:, :-1]
 lbp_y = lbp_features[:, -1]
-lbp_X = extract_features.standardization(lbp_X)
+lbp_X = classification.standardization(lbp_X)
 XtrainLBP, XtestLBP, ytrainLBP, ytestLBP = train_test_split(lbp_X, lbp_y, test_size=0.2, random_state=0)
 
 # for hog
 hog_features = np.load("hog_features.npy")
 hog_X = hog_features[:, :-1]
 hog_y = hog_features[:, -1]
-hog_X = extract_features.standardization(hog_X)
+hog_X = classification.standardization(hog_X)
 XtrainHOG, XtestHOG, ytrainHOG, ytestHOG = train_test_split(hog_X, hog_y, test_size=0.2, random_state=0)
 
 # for hist
 hist_features = np.load("hist_features.npy")
 hist_X = hist_features[:, :-1]
 hist_y = hist_features[:, -1]
-hist_X = extract_features.standardization(hist_X)
+hist_X = classification.standardization(hist_X)
 XtrainHIST, XtestHIST, ytrainHIST, ytestHIST = train_test_split(hist_X, hist_y, test_size=0.2, random_state=0)
 
 # intergration
@@ -62,6 +62,7 @@ def optKNN():
 
 # show original data and predicted data and dicision boundary of the selected knn model
 best_knn_model = KNeighborsClassifier(n_neighbors=3, weights='uniform')
+best_knn_model.fit(XtrainLBP, ytrainLBP)
 knn_ypred = best_knn_model.predict(XtestLBP)
 
 # train SVM model and use cross-validation to select the best C value
@@ -104,13 +105,12 @@ base_model = DummyClassifier(strategy="most_frequent")
 base_model.fit(XtrainLBP, ytrainLBP)
 
 # start cnn
-cnn_X, cnn_y = extract_features.compile_trainingset("D:/Learning/CS AR&VR/CS7CS4MACHINE LEARNING/Group assignment/CMEImages/CME_polar_crop",
-                                         "D:/Learning/CS AR&VR/CS7CS4MACHINE LEARNING/Group assignment/CMEImages/NoCME_polar_crop")
+cnn_X, cnn_y = classification.compile_trainingset("/Users/wanjiang/Downloads/CMEImages/CME_polar_crop", "/Users/wanjiang/Downloads/CMEImages/NoCME_polar_crop")
 cnn_X = cnn_X.astype("float32") / 255.0
 cnn_xtrain, cnn_xtest, cnn_ytrain, cnn_ytest = train_test_split(cnn_X, cnn_y, test_size=0.2, random_state=0)
 
 cnn_ytrain_1hot = keras.utils.to_categorical(cnn_ytrain, num_classes)
-history, cnn_ypred = extract_features.CNN(cnn_xtrain, cnn_xtest, cnn_ytrain_1hot, cnn_xtest)
+history, cnn_ypred = classification.CNN(cnn_xtrain, cnn_xtest, cnn_ytrain_1hot, cnn_xtest)
 
 cm_log = ConfusionMatrixDisplay.from_predictions(cnn_ytest, cnn_ypred)
 cm_log.ax_.set_title('Confusion Matrix')
@@ -204,10 +204,10 @@ def draw4ModelsROC():
 
 
 #optKNN()
-optSVM()
+#optSVM()
 
 #draw4FeaturesMatrices()
 #draw4FeaturesROC()
 #
 #draw4ModelsMatrices()
-#draw4ModelsROC()
+draw4ModelsROC()
