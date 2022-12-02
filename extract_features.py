@@ -61,10 +61,10 @@ def extract_hist(root_dir, target_dir, show_dir):
 
 extract_hog_features("D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_hog")
 extract_hog_features("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_hog")
-# extract_lbp_feature("D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_lbp")
-# extract_lbp_feature("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_lbp")
-# extract_hist("D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_hist", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_hist_show")
-# extract_hist("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_hist", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_hist_show")
+extract_lbp_feature("D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_lbp")
+extract_lbp_feature("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_lbp")
+extract_hist("D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_hist", "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_hist_show")
+extract_hist("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_hist", "D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_hist_show")
 
 
 

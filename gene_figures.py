@@ -11,6 +11,11 @@ from sklearn.metrics import confusion_matrix, classification_report, roc_curve
 from sklearn import svm
 import extract_features
 
+from sklearn.decomposition import PCA
+
+pca_components = 20
+pca = PCA(n_components=pca_components)
+
 # read data
 lbp_features = np.load("lbp_features.npy")
 num_classes = 2
@@ -37,6 +42,9 @@ XtrainHIST, XtestHIST, ytrainHIST, ytestHIST = train_test_split(hist_X, hist_y, 
 
 # intergration
 X = np.column_stack((lbp_X, hog_X, hist_X))
+# 这里加上PCA
+X = pca.fit_transform(X)
+print(X.shape)
 y = hist_y
 XtrainINT, XtestINT, ytrainINT, ytestINT = train_test_split(X, y, test_size=0.2, random_state=0)
 
@@ -104,8 +112,8 @@ base_model = DummyClassifier(strategy="most_frequent")
 base_model.fit(XtrainLBP, ytrainLBP)
 
 # start cnn
-cnn_X, cnn_y = extract_features.compile_trainingset("D:/Learning/CS AR&VR/CS7CS4MACHINE LEARNING/Group assignment/CMEImages/CME_polar_crop",
-                                         "D:/Learning/CS AR&VR/CS7CS4MACHINE LEARNING/Group assignment/CMEImages/NoCME_polar_crop")
+cnn_X, cnn_y = extract_features.compile_trainingset("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop",
+                                         "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_crop")
 cnn_X = cnn_X.astype("float32") / 255.0
 cnn_xtrain, cnn_xtest, cnn_ytrain, cnn_ytest = train_test_split(cnn_X, cnn_y, test_size=0.2, random_state=0)
 
@@ -204,10 +212,10 @@ def draw4ModelsROC():
 
 
 #optKNN()
-optSVM()
+# optSVM()
 
-#draw4FeaturesMatrices()
-#draw4FeaturesROC()
+draw4FeaturesMatrices()
+draw4FeaturesROC()
 #
 #draw4ModelsMatrices()
 #draw4ModelsROC()

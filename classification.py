@@ -56,16 +56,23 @@ def compile_trainingset(positive_path, negative_path):
     return train_x, train_y
 
 def CNN(Xtrain, Xtest, ytrain, ytest):
+    # model = keras.applications.MobileNetV2(input_shape=Xtrain.shape[1:], weights=None, classes=2)
+    # model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
+
     model = keras.Sequential()
     model.add(Conv2D(8, (3, 3), padding='same', input_shape=Xtrain.shape[1:], activation='relu'))
     model.add(Conv2D(8, (3, 3), padding='same', activation='relu'))
-    model.add(Conv2D(16, (3, 3), padding='same', activation='relu'))
-    model.add(Conv2D(16, (3, 3), padding='same', activation='relu'))
-    model.add(MaxPooling2D((2, 2), strides=2, padding='same'))
     model.add(Conv2D(32, (3, 3), padding='same', activation='relu'))
     model.add(Conv2D(32, (3, 3), padding='same', activation='relu'))
     model.add(MaxPooling2D((2, 2), strides=2, padding='same'))
-    # model.add(Dropout(0.5))
+    model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
+    model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
+    model.add(MaxPooling2D((2, 2), strides=2, padding='same'))
+
+    model.add(Conv2D(128, (3, 3), padding='same', activation='relu'))
+    model.add(Conv2D(128, (3, 3), padding='same', activation='relu'))
+    model.add(MaxPooling2D((2, 2), strides=2, padding='same'))
+    model.add(Dropout(0.5))
     model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax', kernel_regularizer=regularizers.l1(0.0001)))
     model.compile(loss="categorical_crossentropy", optimizer='adam', metrics=["accuracy"])
@@ -129,14 +136,14 @@ def classification_all_classifiers():
 
     # start cnn
 
-    # cnn_X, cnn_y = compile_trainingset("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop",
-    #                                        "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_crop")
-    # cnn_X = cnn_X.astype("float32") / 255.0
-    #
-    # cnn_xtrain, cnn_xtest, cnn_ytrain, cnn_ytest = train_test_split(cnn_X, cnn_y, test_size=0.2, random_state=0)
-    #
-    # cnn_ytrain_1hot = keras.utils.to_categorical(cnn_ytrain, num_classes)
-    # history, cnn_ypred = CNN(cnn_xtrain, cnn_xtest, cnn_ytrain_1hot, cnn_xtest)
+    cnn_X, cnn_y = compile_trainingset("D:/BaiduNetdiskDownload/image/CMEImages/CME_polar_crop",
+                                           "D:/BaiduNetdiskDownload/image/CMEImages/NoCME_polar_crop")
+    cnn_X = cnn_X.astype("float32") / 255.0
+
+    cnn_xtrain, cnn_xtest, cnn_ytrain, cnn_ytest = train_test_split(cnn_X, cnn_y, test_size=0.2, random_state=0)
+
+    cnn_ytrain_1hot = keras.utils.to_categorical(cnn_ytrain, num_classes)
+    history, cnn_ypred = CNN(cnn_xtrain, cnn_xtest, cnn_ytrain_1hot, cnn_xtest)
 
     plt.figure()
     plt.rc('font', size=18)
@@ -147,7 +154,7 @@ def classification_all_classifiers():
     show_metrics(ytest, knn_hog_ypred, "hog", "knn", "", plt)
     show_metrics(ytest, svm_hist_ypred, "hist", "svm", "", plt)
     show_metrics(ytest, knn_hist_ypred, "hist", "knn", "", plt)
-    # show_metrics(cnn_ytest, cnn_ypred, "cnn", "cnn", "", plt)
+    show_metrics(cnn_ytest, cnn_ypred, "cnn", "cnn", "", plt)
     plt.xlabel('False positive rate')
     plt.ylabel('True positive rate')
     plt.plot([0, 1], [0, 1], color='green', linestyle='--')
